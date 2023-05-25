@@ -1,46 +1,56 @@
 import streamlit as st
 import yfinance as yf
 import pandas as pd
-import numpy as np
 import datetime
+
 
 st.title('Stock Market Analysis')
 st.write('This is my first app')
 
-ticker = st.text_input('Which stock would you like to look into? Specify the Ticker: eg: AAPL')
-stock_data = yf.Ticker(ticker)
+inputer=st.text_input("Enter Stock Name", "MSFT", key="placeholder")
 
-col1, col2 = st.columns(2)
-
-with col1:
-   st.write('Start Date')
-   sd = st.date_input(
-    "Plz enter the start date of analysis",
-    datetime.date(2019, 1, 1))
-
-with col2:
-   st.write('End Date')
-   ed = st.date_input(
-       "Plz enter the end date of analysis",
-       datetime.date(2022, 1, 1))
+ticker_symbol=inputer
+ticker_data = yf.Ticker(ticker_symbol)
 
 
-stock_df = stock_data.history(period="1d",
-                              start =f'{sd}',
-                              end =f'{ed}')
-st.write(f" Viewing info for {ticker}")
-st.write(stock_df)
 
-#line chart
-col1, col2 = st.columns(2)
+col1, col2= st.columns(2)
 
 with col1:
-   st.write('Volume Analysis')
-   st.line_chart(stock_df['Volume'])
+    sd = st.date_input(
+        "Enter Starting Date",
+        datetime.date(2019, 1, 1))
 
 with col2:
-   st.write('Volume Analysis')
-   st.line_chart(stock_df['Close'])
+    ed = st.date_input(
+        "Enter Closing Date",
+        datetime.date(2022, 5, 21))
+
+
+
+
+# get historical market data
+ticker_df = ticker_data.history(period="1d",
+                                start=f"{sd}",
+                                end=f"{ed}")
+
+st.write( f"We are viewing info for {ticker_symbol}")
+
+st.write(ticker_df)
+
+#st.dataframe(ticker_df)
+#Using a line chart to represent Volumne
+
+
+col1, col2= st.columns(2)
+
+with col1:
+    st.write("Volume Analysis")
+    st.line_chart(ticker_df['Volume'])
+
+with col2:
+    st.write("Closing Price Analysis")
+    st.line_chart(ticker_df['Close'])
 
 
 
